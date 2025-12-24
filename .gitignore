@@ -1,0 +1,36 @@
+# =====================
+# Node.js
+# =====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================
+# Environment variables
+# =====================
+.env
+
+# =====================
+# OS / Editor files
+# =====================
+.DS_Store
+Thumbs.db
+
+# =====================
+# IDE / Editor settings
+# =====================
+.vscode/
+.idea/
+
+# =====================
+# Build outputs (future frontend build)
+# =====================
+frontend/build/
+dist/
+
+# =====================
+# Logs
+# =====================
+logs/
+*.log
