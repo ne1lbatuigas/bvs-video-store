@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import VideoList from "./pages/VideoList";
 import Customers from "./pages/Customers";
 import Rentals from "./pages/Rentals";
+import CustomerList from "./pages/CustomerList";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<VideoList />} />
-          <Route path="/customers" element={<Customers />} />
+          <Route path="/customers" element={<CustomerList />} />
           <Route path="/rentals" element={<Rentals />} />
         </Routes>
       </Layout>
