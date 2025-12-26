@@ -2,6 +2,20 @@ const Rental = require("../models/Rental");
 const Video = require("../models/Video");
 const mongoose = require("mongoose");
 
+// GET all rentals
+exports.getRentals = async (req, res) => {
+  try {
+    const rentals = await Rental.find()
+      .populate("customer")
+      .populate("video");
+
+    res.json(rentals);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // RENT video
 exports.rentVideo = async (req, res) => {
   try {
@@ -38,12 +52,15 @@ exports.rentVideo = async (req, res) => {
         .json({ message: "No available copies for rent" });
     }
 
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + days);
+    const rentDate = new Date();
+
+    const dueDate = new Date(rentDate);
+    dueDate.setUTCDate(dueDate.getUTCDate() + Number(days));
 
     const rental = await Rental.create({
       customer: customerId,
       video: videoId,
+      rentDate,
       dueDate,
     });
 
