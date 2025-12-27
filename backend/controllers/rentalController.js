@@ -87,10 +87,14 @@ exports.returnVideo = async (req, res) => {
     }
 
     const returnDate = new Date();
+
+    const dueDate = new Date(rental.dueDate);
+    dueDate.setHours(23, 59, 59, 999); // allow whole due day
+
     let penalty = 0;
 
-    if (returnDate > rental.dueDate) {
-      const diffTime = returnDate - rental.dueDate;
+    if (returnDate > dueDate) {
+      const diffTime = returnDate - dueDate;
       const overdueDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       penalty = overdueDays * 5;
     }
