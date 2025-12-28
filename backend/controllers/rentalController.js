@@ -25,7 +25,7 @@ exports.rentVideo = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // ✅ ObjectId validation (NOW videoId exists)
+    // ObjectId validation (NOW videoId exists)
     if (!mongoose.Types.ObjectId.isValid(videoId)) {
       return res.status(400).json({ message: "Invalid video ID" });
     }
@@ -34,14 +34,20 @@ exports.rentVideo = async (req, res) => {
       return res.status(400).json({ message: "Invalid customer ID" });
     }
 
-    if (days < 1 || days > 3) {
-      return res.status(400).json({ message: "Rent days must be 1 to 3 only" });
+    if (days < 1) {
+      return res.status(400).json({ message: "Rent days must be at least 1 day" });
     }
 
     const video = await Video.findById(videoId);
 
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
+    }
+
+    if (days > video.maxRentDays) {
+      return res.status(400).json({
+        message: `This video can only be rented for up to ${video.maxRentDays} day(s)`
+      });
     }
 
     const available = video.totalCopies - video.rentedCopies;

@@ -10,6 +10,8 @@ function RentalForm({ onRentalCreated }) {
   const [videoId, setVideoId] = useState("");
   const [days, setDays] = useState(1);
 
+  const selectedVideo = videos.find((v) => v._id === videoId);
+
   useEffect(() => {
     const loadData = async () => {
       setCustomers(await getCustomers());
@@ -17,6 +19,12 @@ function RentalForm({ onRentalCreated }) {
     };
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (selectedVideo) {
+      setDays(1);
+    }
+  }, [selectedVideo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,9 +76,9 @@ function RentalForm({ onRentalCreated }) {
       <input
         type="number"
         min="1"
-        max="3"
+        max={selectedVideo ? selectedVideo.maxRentDays : 1}
         value={days}
-        onChange={(e) => setDays(e.target.value)}
+        onChange={(e) => setDays(Number(e.target.value))}
         required
       />
 
