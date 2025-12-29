@@ -49,7 +49,7 @@ function VideoList() {
             </p>
             <p>Available: {video.totalCopies - video.rentedCopies}</p>
             <button onClick={() => setSelectedVideo(video)}>Edit</button>
-            <button onClick={() => handleDelete(video._id)}>Delete</button>
+            <button className="btn-delete" onClick={() => handleDelete(video._id)}>Delete</button>
           </div>
         ))
       )}

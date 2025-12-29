@@ -25,31 +25,55 @@ function RentalList() {
 
       <h2>Active Rentals</h2>
 
-      {rentals
-        .map((rental) => (
-          <div key={rental._id} className="card">
+      {/* EMPTY STATE */}
+      {rentals.length === 0 && (
+        <p className="empty">No rentals yet.</p>
+      )}
+
+      {rentals.map((rental) => (
+        <div key={rental._id} className="card rental">
+          
+          {/* HEADER: title + status */}
+          <div className="rental-header">
             <h3>{rental.video.title}</h3>
 
-            <p>Customer: {rental.customer?.fullName}</p>
-            <p>Due: {new Date(rental.dueDate).toLocaleDateString()}</p>
-            <p>Status: {rental.status}</p>
-
-            {/* Show return button ONLY if still rented */}
-            {rental.status === "RENTED" && (
-              <button onClick={() => handleReturn(rental._id)}>
-                Return Video
-              </button>
-            )}
-
-            {/* Penalty logic */}
-            {rental.penalty > 0 ? (
-              <span className="badge badge-error">
-                ₱{rental.penalty} Late Fee
-              </span>
-            ) : rental.status === "RETURNED" ? (
-              <span className="badge badge-success">On Time</span>
-            ) : null}
+            <span
+              className={`badge ${
+                rental.status === "RETURNED"
+                  ? "badge-success"
+                  : "badge-warning"
+              }`}
+            >
+              {rental.status}
+            </span>
           </div>
+
+          <p>
+            <strong>Customer:</strong>{" "}
+            {rental.customer?.fullName || "Unknown"}
+          </p>
+
+          <p>
+            <strong>Due:</strong>{" "}
+            {new Date(rental.dueDate).toLocaleDateString()}
+          </p>
+
+          {/* RETURN BUTTON */}
+          {rental.status === "RENTED" && (
+            <button onClick={() => handleReturn(rental._id)}>
+              Return Video
+            </button>
+          )}
+
+          {/* PENALTY DISPLAY */}
+          {rental.penalty > 0 ? (
+            <span className="badge badge-error">
+              ₱{rental.penalty} Late Fee
+            </span>
+          ) : rental.status === "RETURNED" ? (
+            <span className="badge badge-success">On Time</span>
+          ) : null}
+        </div>
       ))}
     </>
   );

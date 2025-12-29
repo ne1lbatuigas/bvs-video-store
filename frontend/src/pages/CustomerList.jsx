@@ -4,6 +4,7 @@ import {
   getCustomers,
   deleteCustomer,
 } from "../services/customerService";
+import { FiPhone } from "react-icons/fi";
 
 function CustomerList() {
   const [customers, setCustomers] = useState([]);
@@ -32,9 +33,11 @@ function CustomerList() {
       {customers.map((customer) => (
         <div key={customer._id} className="card">
           <h3>{customer.fullName}</h3>
-          <p>📞 {customer.contactNumber}</p>
+          <p className="customer-phone">
+            <FiPhone /> {customer.contactNumber}
+          </p>
 
-          <button onClick={() => handleDelete(customer._id)}>
+          <button className="btn-delete" onClick={() => handleDelete(customer._id)}>
             Delete
           </button>
         </div>
