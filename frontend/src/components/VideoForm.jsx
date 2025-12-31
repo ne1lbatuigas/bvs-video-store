@@ -75,15 +75,21 @@ function VideoForm({ onVideoSaved, selectedVideo, clearSelection }) {
         <option value={3}>3 days</option>
       </select>
 
-      <button type="submit">
+      <div className="form-actions">
+        <button type="submit">
         {isEdit ? "Update Video" : "Add Video"}
-      </button>
+        </button>
 
-      {isEdit && (
-        <button type="button" onClick={clearSelection}>
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={() => {
+            clearSelection();   // closes modal
+          }}
+        >
           Cancel
         </button>
-      )}
+      </div>
     </form>
   );
 }

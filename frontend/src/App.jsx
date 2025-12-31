@@ -8,7 +8,7 @@ import Reports from "./pages/Reports";
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
+      <Layout wide>
         <div className="container">
           <Routes>
             <Route path="/" element={<VideoList />} />

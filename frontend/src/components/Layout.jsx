@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { FaPlay, FaUsers, FaFilm, FaFileAlt } from "react-icons/fa";
 
-function Layout({ children }) {
+function Layout({ children, wide = false }) {
   return (
     <>
       <header className="app-header">
@@ -34,7 +34,7 @@ function Layout({ children }) {
         </nav>
       </header>
 
-      <div className="container">{children}</div>
+      <div className={wide ? "container-wide" :  "container"}>{children}</div>
 
       {/* FOOTER */}
       <footer className="app-footer">
