@@ -30,7 +30,7 @@ function RentalForm({ onRentalCreated }) {
     e.preventDefault();
 
     await createRental({
-      customerId, 
+      customerId,
       videoId,
       days,
     });
@@ -42,49 +42,69 @@ function RentalForm({ onRentalCreated }) {
   };
 
   return (
-    <form className="card" onSubmit={handleSubmit}>
+    <form className="card rental-form" onSubmit={handleSubmit}>
       <h3>Rent a Video</h3>
 
-      <select
-        value={customerId}
-        onChange={(e) => setCustomerId(e.target.value)}
-        required
-      >
-        <option value="">Select Customer</option>
-        {customers.map((c) => (
-          <option key={c._id} value={c._id}>
-            {c.fullName}
-          </option>
-        ))}
-      </select>
+      <div className="rental-form-row">
+        {/* CUSTOMER */}
+        <div className="form-group">
+          <label>Select Customer</label>
+          <select
+            value={customerId}
+            onChange={(e) => setCustomerId(e.target.value)}
+            required
+          >
+            <option value="">-- Choose Customer --</option>
+            {customers.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.fullName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <select
-        value={videoId}
-        onChange={(e) => setVideoId(e.target.value)}
-        required
-      >
-        <option value="">Select Video</option>
-        {videos
-          .filter((v) => v.totalCopies - v.rentedCopies > 0)
-          .map((v) => (
-            <option key={v._id} value={v._id}>
-              {v.title} ({v.category})
-            </option>
-        ))}
-      </select>
+        {/* VIDEO */}
+        <div className="form-group">
+          <label>Select Video</label>
+          <select
+            value={videoId}
+            onChange={(e) => setVideoId(e.target.value)}
+            required
+          >
+            <option value="">-- Choose Video --</option>
+            {videos
+              .filter((v) => v.totalCopies - v.rentedCopies > 0)
+              .map((v) => (
+                <option key={v._id} value={v._id}>
+                  {v.title} ({v.category})
+                </option>
+              ))}
+          </select>
+        </div>
 
-      <input
-        type="number"
-        min="1"
-        max={selectedVideo ? selectedVideo.maxRentDays : 1}
-        value={days}
-        onChange={(e) => setDays(Number(e.target.value))}
-        required
-      />
+        {/* DAYS */}
+        <div className="form-group days">
+          <label>Days</label>
+          <input
+            type="number"
+            min="1"
+            max={selectedVideo ? selectedVideo.maxRentDays : 1}
+            value={days}
+            onChange={(e) => setDays(Number(e.target.value))}
+            required
+          />
+        </div>
 
-      <button type="submit">Rent</button>
+        {/* BUTTON */}
+        <div className="form-group form-group-button">
+          <label>&nbsp;</label>
+          <button type="submit" className="rent-btn">
+            ▶ Rent Video
+          </button>
+        </div>
+      </div>
     </form>
   );
 }
 
-export default RentalForm;  
+export default RentalForm;

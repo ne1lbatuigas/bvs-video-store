@@ -19,62 +19,124 @@ function RentalList() {
     loadRentals();
   };
 
+  // ✅ Active rentals only
+  const activeRentals = rentals.filter(
+    (rental) => rental.status === "RENTED"
+  );
+
+  // 🔁 used for correct overdue calculation
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   return (
     <>
       <RentalForm onRentalCreated={loadRentals} />
 
       <h2>Active Rentals</h2>
 
-      {/* EMPTY STATE */}
-      {rentals.length === 0 && (
-        <p className="empty">No rentals yet.</p>
+      {activeRentals.length === 0 && (
+        <p className="empty">No active rentals.</p>
       )}
 
-      {rentals.map((rental) => (
-        <div key={rental._id} className="card rental">
-          
-          {/* HEADER: title + status */}
-          <div className="rental-header">
-            <h3>{rental.video.title}</h3>
+      {activeRentals.length > 0 && (
+        <div className="table-wrapper">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>CUSTOMER</th>
+                <th>VIDEO</th>
+                <th>RENTAL DATE</th>
+                <th>DUE DATE</th>
+                <th>FEE</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
 
-            <span
-              className={`badge ${
-                rental.status === "RETURNED"
-                  ? "badge-success"
-                  : "badge-warning"
-              }`}
-            >
-              {rental.status}
-            </span>
-          </div>
+            <tbody>
+              {activeRentals.map((rental) => {
+                const due = new Date(rental.dueDate);
+                due.setHours(0, 0, 0, 0);
 
-          <p>
-            <strong>Customer:</strong>{" "}
-            {rental.customer?.fullName || "Unknown"}
-          </p>
+                const isOverdue = today > due;
 
-          <p>
-            <strong>Due:</strong>{" "}
-            {new Date(rental.dueDate).toLocaleDateString()}
-          </p>
+                const daysLate = isOverdue
+                  ? Math.floor(
+                      (today - due) / (1000 * 60 * 60 * 24)
+                    )
+                  : 0;
 
-          {/* RETURN BUTTON */}
-          {rental.status === "RENTED" && (
-            <button onClick={() => handleReturn(rental._id)}>
-              Return Video
-            </button>
-          )}
+                const baseFee =
+                  rental.video?.rentPrice || 0;
 
-          {/* PENALTY DISPLAY */}
-          {rental.penalty > 0 ? (
-            <span className="badge badge-error">
-              ₱{rental.penalty} Late Fee
-            </span>
-          ) : rental.status === "RETURNED" ? (
-            <span className="badge badge-success">On Time</span>
-          ) : null}
+                const lateFee =
+                  daysLate * (rental.penaltyPerDay || 5);
+
+                return (
+                  <tr key={rental._id}>
+                    <td>{rental.customer?.fullName || "Unknown"}</td>
+
+                    <td>{rental.video?.title}</td>
+
+                    <td>
+                      {new Date(
+                        rental.rentDate
+                      ).toLocaleDateString()}
+                    </td>
+
+                    <td
+                      style={{
+                        color: isOverdue ? "#dc2626" : "inherit",
+                        fontWeight: isOverdue ? 600 : "normal",
+                      }}
+                    >
+                      {due.toLocaleDateString()}
+                    </td>
+
+                    <td>
+                      ₱{baseFee}
+                      {lateFee > 0 && (
+                        <span
+                          style={{
+                            color: "#dc2626",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {" "}
+                          + ₱{lateFee}
+                        </span>
+                      )}
+                    </td>
+
+                    <td>
+                      {isOverdue ? (
+                        <span className="badge badge-error">
+                          {daysLate} day
+                          {daysLate > 1 && "s"} overdue
+                        </span>
+                      ) : (
+                        <span className="badge badge-success">
+                          On Time
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="actions">
+                      <button
+                        className="icon-btn edit"
+                        title="Return"
+                        onClick={() => handleReturn(rental._id)}
+                      >
+                        ⟲ Return
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-      ))}
+      )}
     </>
   );
 }

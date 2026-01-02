@@ -389,4 +389,60 @@ button:disabled {
   overflow-x: auto;
 }
 
+/* RENTAL FORM LAYOUT */
+.rental-form h3 {
+  margin-bottom: 1rem;
+}
+
+.rental-form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  flex: 1;
+}
+
+.form-group.days {
+  max-width: 120px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+/* RENT BUTTON */
+.rent-btn {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rent-btn:hover {
+  background: #1d4ed8;
+}
+
+.form-group-button {
+  flex: 0 0 auto;
+  align-self: stretch;
+}
+
+.form-group-button .rent-btn {
+  height: 38px; /* matches input height */
+  margin-bottom: 0.75rem;
+}
+
 
