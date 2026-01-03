@@ -11,3 +11,9 @@ export const getCustomerRentalReport = async () => {
   const res = await api.get("/reports/customers");
   return res.data;
 };
+
+// RENTAL HISTORY REPORT
+export const getRentalHistoryReport = async () => {
+  const res = await api.get("/reports/history");
+  return res.data;
+};

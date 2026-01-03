@@ -76,3 +76,54 @@ exports.customerRentalReportCSV = async (req, res) => {
   res.attachment("customer_rental_report.csv");
   res.send(csv);
 };
+
+// RENTAL HISTORY REPORT
+exports.rentalHistoryReport = async (req, res) => {
+  try {
+    const rentals = await Rental.find()
+      .populate("customer", "fullName")
+      .populate("video", "title rentPrice")
+      .sort({ createdAt: -1 });
+
+    const report = rentals.map((r) => ({
+      customer: r.customer?.fullName || "Unknown",
+      video: r.video?.title || "Unknown",
+      rentDate: r.createdAt,
+      dueDate: r.dueDate,
+      returnDate: r.returnDate || null,
+      penalty: r.penalty || 0,
+    }));
+
+    res.json(report);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// CSV
+exports.rentalHistoryReportCSV = async (req, res) => {
+  const rentals = await Rental.find()
+    .populate("customer", "fullName")
+    .populate("video", "title rentPrice")
+    .sort({ createdAt: -1 });
+
+  const data = rentals.map((r) => ({
+    Customer: r.customer?.fullName || "Unknown",
+    Video: r.video?.title || "Unknown",
+    RentDate: r.createdAt.toLocaleDateString(),
+    DueDate: r.dueDate.toLocaleDateString(),
+    ReturnDate: r.returnDate
+      ? r.returnDate.toLocaleDateString()
+      : "Not Returned",
+    Penalty: r.penalty,
+  }));
+
+  const { Parser } = require("json2csv");
+  const parser = new Parser();
+  const csv = parser.parse(data);
+
+  res.header("Content-Type", "text/csv");
+  res.attachment("rental_history_report.csv");
+  res.send(csv);
+};
+

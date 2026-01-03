@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   getVideoInventoryReport,
   getCustomerRentalReport,
+  getRentalHistoryReport
 } from "../services/reportService";
 import { Download } from "lucide-react";
 
@@ -9,6 +10,7 @@ function Reports() {
   const [activeTab, setActiveTab] = useState("videos");
   const [videoReport, setVideoReport] = useState([]);
   const [customerReport, setCustomerReport] = useState([]);
+  const [historyReport, setHistoryReport] = useState([]);
 
   useEffect(() => {
     loadReports();
@@ -17,9 +19,11 @@ function Reports() {
   const loadReports = async () => {
     const videos = await getVideoInventoryReport();
     const customers = await getCustomerRentalReport();
+    const history = await getRentalHistoryReport();
 
     setVideoReport(videos);
     setCustomerReport(customers);
+    setHistoryReport(history);
   };
 
   return (
@@ -54,7 +58,6 @@ function Reports() {
             activeTab === "history" ? "active" : ""
           }`}
           onClick={() => setActiveTab("history")}
-          disabled
         >
           Rentals History
         </button>
@@ -145,9 +148,54 @@ function Reports() {
         )}
 
         {activeTab === "history" && (
-          <div className="empty">
-            Rentals history report coming soon
-          </div>
+          <>
+            <div className="report-header">
+              <h3>Rentals History</h3>
+
+              <button
+                className="btn-primary"
+                onClick={() =>
+                  window.open(
+                    "http://localhost:5000/api/reports/history/csv"
+                  )
+                }
+              >
+                <Download size={16} />
+                Export CSV
+              </button>
+            </div>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Video</th>
+                  <th>Rental Date</th>
+                  <th>Due Date</th>
+                  <th>Return Date</th>
+                  <th>Penalty</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historyReport.map((r, index) => (
+                  <tr key={index}>
+                    <td>{r.customer}</td>
+                    <td>{r.video}</td>
+                    <td>{new Date(r.rentDate).toLocaleDateString()}</td>
+                    <td>{new Date(r.dueDate).toLocaleDateString()}</td>
+                    <td>
+                      {r.returnDate
+                        ? new Date(r.returnDate).toLocaleDateString()
+                        : "—"}
+                    </td>
+                    <td>
+                      {`₱${r.penalty}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
     </div>
